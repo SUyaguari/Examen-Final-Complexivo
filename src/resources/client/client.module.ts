@@ -12,6 +12,7 @@ import { Client, clientSchema } from './entities/client.entity';
       name: Client.name,
       schema: clientSchema
     }])
-  ]
+  ],
+  exports: [ClientService]
 })
 export class ClientModule {}

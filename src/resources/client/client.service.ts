@@ -147,4 +147,19 @@ export class ClientService {
     }
 
   }
+
+  async findByEmail(email: string): Promise<Client> {
+
+    try{
+      
+      return this.clientModel.findOne({ email });
+    
+    }catch(error) {
+
+      handleException("Find client by email", error);
+      
+    }
+
+  }
+
 }
