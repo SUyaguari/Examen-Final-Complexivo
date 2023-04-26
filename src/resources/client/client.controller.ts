@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Res } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { FilterClientDto } from './dto/filter-client.dto';
+import type { Response } from 'express'; 
+
 
 @Controller('client')
 export class ClientController {
@@ -26,5 +28,22 @@ export class ClientController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.clientService.remove(id);
+  }
+
+  @Get('/pdf')
+  async generatePdf(@Res() res: Response){
+
+    const bufferPromise = await this.clientService.generatePdf();
+    
+    const bufferPDF: Buffer = await bufferPromise;
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename=Orden_de_pedido.pdf',
+      'Content-Length': bufferPDF.length,
+    });
+
+    res.end(bufferPDF);
+
   }
 }

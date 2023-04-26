@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { handleException } from 'src/assets/utils/handle-exception';
 import { FilterClientDto } from './dto/filter-client.dto';
 import { paginateData } from 'src/assets/utils/pagination';
+import { generatePdf } from 'src/assets/utils/generate-pdf';
 
 @Injectable()
 export class ClientService {
@@ -159,6 +160,25 @@ export class ClientService {
       handleException("Find client by email", error);
       
     }
+
+  }
+
+  async generatePdf(){
+
+    const pipeline = [
+      {
+        $group: {
+          _id: '$nationality',
+          promedioEdad: { $avg: '$age' }
+        }
+      }
+    ];
+
+    const body = [['Nacionalidad', 'Edad media']];
+
+    const result = await this.clientModel.aggregate(pipeline);
+
+    return generatePdf(result);
 
   }
 
